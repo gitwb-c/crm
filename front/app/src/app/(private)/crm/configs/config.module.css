@@ -1,0 +1,41 @@
+.configContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+  padding: 16px 0;
+}
+
+.configCard {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  border: 2px solid transparent;
+}
+
+.configCard:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  border-color: #3b82f6; /* azul suave no hover */
+}
+
+.configIcon {
+  font-size: 1.6rem;
+  color: #3b82f6;
+}
+
+.configTitle {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #111827;
+}
+
+.configDescription {
+  font-size: 0.875rem;
+  color: #4b5563;
+  line-height: 1.3;
+}

@@ -1,0 +1,130 @@
+.crmContainer {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f9fafb;
+  font-family: "Inter", sans-serif;
+}
+
+.sidebar {
+  width: 100px;
+  background: #f9fafb;
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  border-right: none;
+  box-shadow: none;
+  min-height: 100vh;
+}
+
+.sidebarTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.navItem {
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 12px 16px;
+  border-radius: 10px;
+  color: #374151;
+  transition: all 0.2s ease;
+}
+
+.navItem:hover {
+  background-color: rgba(81, 85, 90, 0.1);
+  color: #111827;
+  transform: translateX(5px);
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.mainContent {
+  flex: 1;
+  padding: 40px;
+}
+
+.profileContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+}
+
+.profileButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profileCircle {
+  width: 32px;
+  height: 32px;
+  background-color: #d1d5db;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+}
+
+.profileButton:hover .profileCircle {
+  background-color: #9ca3af;
+}
+
+.profileButton:hover .profileCircle.loggedIn {
+  background-color: #16a34a;
+}
+
+.profileCircle.loggedIn {
+  background-color: #22c55e;
+}
+
+.profileMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  padding: 10px;
+  z-index: 10;
+}
+
+.authButton {
+  background: #3b82f6;
+  color: #ffffff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  width: 100%;
+  text-align: left;
+}
+
+.authButton:hover {
+  background: #606264;
+}
+
+.newMessageDot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: orange;
+  border-radius: 50%;
+  margin-left: 5px;
+}

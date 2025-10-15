@@ -1,0 +1,101 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.titulo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 12px;
+  color: #111827;
+}
+
+.selectFila {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 1rem;
+  margin-bottom: 16px;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.selectFila:hover {
+  border-color: #3b82f6;
+}
+
+.usuariosContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.usuarioCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.usuarioCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.usuarioNome {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #111827;
+}
+
+.usuarioPosicao {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.removerUsuario {
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  font-weight: bold;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.removerUsuario:hover {
+  transform: scale(1.2);
+}
+
+.botaoNovo {
+  background: rgb(187, 12, 108);
+  color: white;
+  font-weight: bold;
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.botaoNovo:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.semUsuarios {
+  text-align: center;
+  font-size: 0.95rem;
+  color: #6b7280;
+  padding: 12px;
+  background-color: #f9fafb;
+  border-radius: 8px;
+}

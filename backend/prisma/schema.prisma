@@ -1,0 +1,211 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Departamento {
+  id       String   @id @default(uuid()) @db.Uuid
+  nome     String
+  acesso   Int?
+
+  fases    Fase[]
+  filas    Fila[]
+  usuarios Usuario[]
+}
+
+model UsuarioConectado { 
+  id       String   @id @default(uuid())  @db.Uuid
+  idUsuario String     @unique @db.Uuid
+  status    String  @default("offline")
+
+  negocios       Negocio[]
+  usuario   Usuario @relation(fields: [idUsuario], references: [id], onDelete: Cascade)
+  chats     UsuarioConectadoChat[]
+  usuarioConectadoFila UsuarioConectadoFila[]
+}
+
+model Usuario {
+  id       String   @id @default(uuid()) @db.Uuid
+  nome           String
+  email          String            @unique
+  senha          String
+  idDepartamento String            @db.Uuid
+
+  departamento   Departamento      @relation(fields: [idDepartamento], references: [id])
+  usuarioConectado             UsuarioConectado?      
+}
+
+model Fila {
+  id       String   @id @default(uuid()) @db.Uuid
+  nome           String       @unique
+  idDepartamento String       @db.Uuid
+  tempoFila      Int          @default(60)
+
+  departamento   Departamento @relation(fields: [idDepartamento], references: [id], onDelete: Cascade)
+  usuarioConectadoFila UsuarioConectadoFila[]
+  chats Chat[]
+}
+
+model Chat {
+  id       String   @id @default(uuid()) @db.Uuid
+  nome            String
+  chatAceito  Boolean    @default(false)
+  chatFechado Boolean    @default(false)
+  idNegocio       Int        @unique
+  naoLida         Boolean    @default(true)
+  threadChatbot       String?
+  idFila  String?  @db.Uuid
+
+  fila  Fila? @relation(fields: [idFila], references: [id])
+  negocio         Negocio    @relation(fields: [idNegocio], references: [id], onDelete: Cascade)
+  mensagens       Mensagem[]
+  usuariosConectados        UsuarioConectadoChat[]
+}
+
+model UsuarioConectadoChat {
+  id       String   @id @default(uuid()) @db.Uuid
+  idUsuarioConectado  String @db.Uuid
+  idChat String @db.Uuid
+  visualizar        Boolean?   @default(true)
+
+  usuarioConectado   UsuarioConectado   @relation(fields: [idUsuarioConectado], references: [id])
+  chat Chat @relation(fields: [idChat], references: [id], onDelete: Cascade)
+
+  @@unique([idUsuarioConectado, idChat])
+}
+
+model Fase {
+  id             Int        @id @default(autoincrement())
+  cor                String
+  nome               String
+  pos                Int
+  idDepartamento     String     @db.Uuid
+  idPipeline         Int
+  perdaOuGanho       Boolean
+  idFila             String?    @db.Uuid
+
+  departamento       Departamento @relation(fields: [idDepartamento], references: [id])
+  pipeline           Pipeline     @relation(fields: [idPipeline], references: [id], onDelete: Cascade)
+  negocios           Negocio[]
+  camposObrigatorios Campo[]
+}
+
+model Pipeline {
+  id             Int        @id @default(autoincrement())
+  nome     String    @unique
+
+  fases    Fase[]
+  negocios Negocio[]
+}
+
+model Campo {
+  id       String   @id @default(uuid()) @db.Uuid
+  nome              String          @unique
+  section           String
+
+  tipo              TipoCampo
+  form              Form[]
+  valoresLista      ListaSuspensa[]
+  fasesObrigatorias Fase[]    
+  config CampoConfig?
+}
+
+model CampoConfig{
+  id       String   @id @default(uuid()) @db.Uuid
+  idCampo           String             @unique @db.Uuid
+  target            String
+
+  campo Campo @relation(fields: [idCampo], references: [id])
+}
+
+model ListaSuspensa {
+  id       String   @id @default(uuid()) @db.Uuid
+  idCampo String @db.Uuid
+  valor   String
+  campo   Campo  @relation(fields: [idCampo], references: [id], onDelete: Cascade)
+}
+
+model Form {
+  id       String   @id @default(uuid()) @db.Uuid
+  valor     String
+  idCampo   String @db.Uuid
+  idNegocio Int
+  campo     Campo   @relation(fields: [idCampo], references: [id], onDelete: Cascade)
+  negocio   Negocio @relation(fields: [idNegocio], references: [id], onDelete: Cascade)
+}
+
+model Negocio {
+  id             Int        @id @default(autoincrement())
+  telefone       String
+  nome           String
+  dateCreate     String
+  idFase         Int        @default(1)
+  idPipeline     Int        @default(1)
+  idUsuarioConectado      String? @db.Uuid
+  nomeCliente    String
+  numeroCampanha String
+  negocioAceito  Boolean    @default(false)
+
+  form           Form[]
+  chat      Chat? @relation
+  fase           Fase       @relation(fields: [idFase], references: [id], onDelete: Cascade)
+  pipeline       Pipeline   @relation(fields: [idPipeline], references: [id], onDelete: Cascade)
+  usuarioConectado        UsuarioConectado?    @relation(fields: [idUsuarioConectado], references: [id], onDelete: Cascade)
+}
+
+model Mensagem {
+  id       String   @id @default(uuid()) @db.Uuid
+  mensagem    String
+  base64      Boolean
+  timestamp   DateTime  @default(now())
+  nome        String
+  caption     String?
+  fileName    String?
+  mimetype    String?
+  fromMe      Boolean
+  interna     Boolean? @default(false)
+
+  idChat String @db.Uuid
+  chat   Chat? @relation(fields: [idChat], references: [id], onDelete: Cascade)
+}
+
+enum TipoCampo {
+  TXT
+  DATA
+  LS
+}
+
+model Credential {
+  id       String   @id @default(uuid()) @db.Uuid
+  service  String 
+  target   String   @unique
+  url      String?
+  key      String?
+  token    String?
+  clientId String?
+}
+
+model UsuarioConectadoFila {
+  id                  String    @id @default(uuid()) @db.Uuid
+  idFila              String    @db.Uuid
+  idUsuarioConectado  String    @db.Uuid
+  pos Int 
+
+  fila                Fila                @relation(fields: [idFila], references: [id], onDelete: Cascade)
+  usuarioConectado    UsuarioConectado    @relation(fields: [idUsuarioConectado], references: [id], onDelete: Cascade)
+
+  @@unique([idFila, idUsuarioConectado])
+}
+
+model BusinessConfig {
+  id        String    @id @default(uuid()) @db.Uuid
+  target    String    @unique
+  type      String
+  value     Json
+  categoria String?
+}

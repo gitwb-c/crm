@@ -1,0 +1,128 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../dist/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Permissao {
+  id            Int            @id @default(autoincrement())
+  nome          String
+  departamentos Departamento[]
+}
+
+model Departamento {
+  id         Int         @id @default(autoincrement())
+  nome       String
+  filas      Fila[]
+  usuarios   Usuario[]
+  permissoes Permissao[]
+}
+
+model UsuarioConectado {
+  id        Int     @id @default(autoincrement())
+  idUsuario Int     @map("id_usuario")
+  rankFila  Int     @map("rank_fila")
+  usuario   Usuario @relation(fields: [idUsuario], references: [id], onDelete: Cascade)
+}
+
+model Usuario {
+  id             Int                @id @default(autoincrement())
+  nome           String
+  email          String             @unique
+  senha          String
+  idDepartamento Int                @map("id_departamento")
+  negocios       Negocio[]
+  departamento   Departamento       @relation(fields: [idDepartamento], references: [id])
+  u_             UsuarioConectado[]
+  filas          Fila[]             @relation("FilaToUsuario")
+}
+
+model Fila {
+  id             Int          @id @default(autoincrement())
+  nome           String       @unique
+  tempoFila      Int          @default(60) @map("tempo_fila")
+  idDepartamento Int          @map("id_departamento")
+  fases          Fase[]
+  departamento   Departamento @relation(fields: [idDepartamento], references: [id], onDelete: Cascade)
+  usuarios       Usuario[]    @relation("FilaToUsuario")
+}
+
+model Instancia {
+  id              Int        @id @default(autoincrement())
+  conversaAceita  Boolean    @default(false) @map("conversa_aceita")
+  conversaFechada Boolean    @default(false) @map("conversa_fechada")
+  idNegocio       Int        @map("id_negocio")
+  nome            String
+  negocio         Negocio    @relation(fields: [idNegocio], references: [id], onDelete: Cascade)
+  mensagens       Mensagem[]
+}
+
+model Fase {
+  id                 Int       @id @default(autoincrement())
+  cor                String
+  posicao            String
+  idPipeline         Int       @map("id_pipeline")
+  nome               String    @unique
+  perdaOuGanho       Boolean   @map("perda_ou_ganho")
+  idFila             Int?      @map("id_fila")
+  fila               Fila?     @relation(fields: [idFila], references: [id])
+  pipeline           Pipeline  @relation(fields: [idPipeline], references: [id], onDelete: Cascade)
+  negocios           Negocio[]
+  camposObrigatorios Campo[]   @relation("CampoToFase")
+}
+
+model Pipeline {
+  id       Int       @id @default(autoincrement())
+  nome     String    @unique
+  fases    Fase[]
+  negocios Negocio[]
+}
+
+model Campo {
+  id                Int    @id @default(autoincrement())
+  nome              String @unique
+  tipo              String
+  form              Form[]
+  fasesObrigatorias Fase[] @relation("CampoToFase")
+}
+
+model Form {
+  id        Int     @id @default(autoincrement())
+  valor     String
+  idCampo   Int     @map("id_campo")
+  idNegocio Int     @map("id_negocio")
+  campo     Campo   @relation(fields: [idCampo], references: [id], onDelete: Cascade)
+  negocio   Negocio @relation(fields: [idNegocio], references: [id], onDelete: Cascade)
+}
+
+model Negocio {
+  id             Int         @id @default(autoincrement())
+  telefone       String      @unique
+  dateCreate     DateTime    @default(now()) @map("date_create")
+  numeroCampanha String      @map("numero_campanha")
+  idFase         Int         @default(1) @map("id_fase")
+  idPipeline     Int         @default(1) @map("id_pipeline")
+  idUsuario      Int         @map("id_responsavel")
+  nome           String?     @unique
+  form           Form[]
+  instancias     Instancia[]
+  fase           Fase        @relation(fields: [idFase], references: [id])
+  pipeline       Pipeline    @relation(fields: [idPipeline], references: [id])
+  usuario        Usuario     @relation(fields: [idUsuario], references: [id])
+}
+
+model Mensagem {
+  id          Int       @id @default(autoincrement())
+  mensagem    String
+  base64      Boolean
+  caption     String?
+  timestamp   DateTime  @default(now())
+  nome        String
+  fromMe      Boolean   @map("from_me")
+  idInstancia Int       @map("id_instancia")
+  instancia   Instancia @relation(fields: [idInstancia], references: [id])
+}

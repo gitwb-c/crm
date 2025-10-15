@@ -1,0 +1,19 @@
+.avisoPermissao {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fef3c7;
+  color: #92400e;
+  border-radius: 8px;
+  padding: 16px 20px;
+  font-size: 1rem;
+  font-weight: 500;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  gap: 10px;
+  text-align: center;
+}
+
+.avisoPermissao svg {
+  width: 24px;
+  height: 24px;
+}
